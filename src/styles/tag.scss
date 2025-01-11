@@ -1,0 +1,118 @@
+.header {
+  margin: 1em 0;
+  width: 30%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #111;
+  font-weight: bold;
+}
+
+.headerAction {
+  cursor: pointer;
+  color: #1a1a1a;
+  
+  &:hover {
+    color: #555;
+  }
+}
+
+.header button {
+  color: #eee;
+  padding: .8em 1em;
+  background-color: #1a1a1a;
+  cursor: pointer;
+  border-radius: 4px;
+
+  &:hover {
+    background-color: #333;
+  }
+  
+  &:disabled {
+    background-color: #555
+  }
+}
+
+.pageTag {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Centraliza horizontalmente */
+  justify-content: flex-start; /* Alinha no topo */
+  height: 100vh; /* Garante que o body ocupe toda a altura da tela */
+  padding: 0 32px;
+  background-color: #fff;
+}
+
+.tagContainer {
+  background-color: #fff;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.tagCard {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  width: 57.99mm;
+  height: 23.3mm;
+  margin: .1em;
+  border: solid 1px #e5e5e5;
+}
+
+.tagText {
+  /*font: 400 Roboto, sans-serif;*/
+  font-family: Arial, Helvetica, sans-serif;
+  text-align: center;
+  font-size: 25pt;
+  font-weight: bold;
+  color: #222;
+}
+
+.tagBarcode {
+  text-align: center;
+  font-family: 'Code128', sans-serif;
+  font-size: 25pt;
+  color: #222;
+  border-top: solid 1px #e5e5e5;
+  padding-top: 2px;
+  width: 100%;
+}
+
+@media screen and (max-width: 920px) {
+  .tagContainer {
+    grid-template-columns: repeat(1, 1fr);
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .header {
+    width: 100%;
+  }
+}
+
+@media print {
+  @page {
+    size: 76.2mm 50.8mm; /* 102mm 68mm Tamanho personalizado */
+    margin: 0; /* Ajuste de margem, se necessário */
+    orientation: landscape; /* Define orientação paisagem */
+  }
+
+  .pageTag {
+    display: block;
+    padding: 0;
+  }
+
+  .tagCard {
+    page-break-inside: avoid;
+    margin: 0 0 5em 2mm;
+  }
+
+  .tagContainer {
+    grid-template-columns: repeat(1, 1fr);
+  }
+
+  .header {
+    display: none;
+  }
+}
