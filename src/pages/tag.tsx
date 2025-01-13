@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 
 import {encodeToCode128} from '../utils/code128'
 import '../styles/tag.scss';
@@ -8,6 +8,19 @@ function Tag({data = [], changeComponent}: any) {
   const [currentPage, setCurrentPage] = useState(1);
   const totalPages = useMemo(() => Math.ceil(data.length / ITEMS_PER_PAGE), [data.length]);
   
+  useEffect(() => {
+    const convertButton = document.getElementById('convert');
+    
+    if (convertButton) {
+      convertButton.addEventListener('click', () => {
+        // Enviar a solicitação para o processo principal para gerar o PDF
+        window.electron.ipcRenderer.send('convert-pdf');
+      });
+    } else {
+      console.log("O botão com ID 'convert' não foi encontrado.");
+    }
+  },[]);
+
   // Dados da página atual
   const currentData = useMemo(() => {
     const start = (currentPage - 1) * ITEMS_PER_PAGE;
@@ -44,7 +57,7 @@ function Tag({data = [], changeComponent}: any) {
 
         Total: {data.length} | Página: {currentPage} / {totalPages}
 
-        <a onClick={() => window.print()} title="imprimir" className='headerAction'>
+        <a id="convert" title="imprimir" className='headerAction'>
           <svg
             stroke="currentColor"
             fill="none"

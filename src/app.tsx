@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { createRoot } from 'react-dom/client';
 
 import './styles/global.scss'
@@ -11,10 +11,6 @@ const root = createRoot(document.body);
 const App = () => {
   const [componentToRender, setComponentToRender] = useState('Home');
   const [data, setData] = useState([]);
-
-  useEffect(() => {
-    console.log("Mudando componente para Home");
-  }, []);  
 
   const changeComponent = (component: string) => setComponentToRender(component);
 
