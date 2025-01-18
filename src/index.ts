@@ -35,10 +35,7 @@ const createWindow = (): void => {
   ipcMain.on('convert-pdf', () => {
     const options = {
       marginsType: 0, // Margens personalizadas
-      pageSize: { 
-        width: 76.2, // Largura em pontos
-        height: 50.8, // Altura em pontos
-      },
+      pageSize: { width: 1.97, height: 1.4 },
       printBackground: true, // Imprimir fundo
       landscape: true, // Modo paisagem
     };
