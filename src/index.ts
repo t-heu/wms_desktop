@@ -1,4 +1,4 @@
-import { app, BrowserWindow, ipcMain } from 'electron';
+import { app, BrowserWindow, ipcMain, dialog } from 'electron';
 import path from 'path';
 import fs from 'fs';
 
@@ -10,7 +10,11 @@ if (require('electron-squirrel-startup')) {
   app.quit();
 }
 
-const filepath = path.join(__dirname, 'print.pdf');
+// Obter o diretório "Downloads" do usuário no Windows
+const downloadsPath = path.join(process.env.USERPROFILE, 'Downloads');
+
+// Caminho completo do arquivo
+const filepath = path.join(downloadsPath, 'wms.pdf');
 
 const createWindow = (): void => {
   const mainWindow = new BrowserWindow({
@@ -45,6 +49,12 @@ const createWindow = (): void => {
         if (err) {
           console.log(err);
         } else {
+          dialog.showMessageBox({
+            type: "info",
+            title: "PDF Gerado com Sucesso",
+            message: "O arquivo PDF foi gerado com sucesso e está disponível na sua pasta de Downloads.",
+            buttons: ["OK"]
+          });
           console.log('PDF Generated Successfully');
         }
       });

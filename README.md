@@ -30,6 +30,10 @@ Este projeto foi desenvolvido utilizando as seguintes tecnologias:
    # ou
    yarn start
    ```
+4. Caso queira gerar arquivo .exe:
+```
+npm run make -- --platform=win32 --arch=x64
+```
 
 ## 📝 Funcionalidades
 

@@ -93,7 +93,7 @@ function Tag({data = [], changeComponent}: any) {
         {currentData.map((text: string, index: number) => (
           <div className='tagCard' key={index}>
             <p className='tagText'>
-              {text.slice(5)}
+              {text.length >= 15 ? text.slice(5) : text.slice(4)}
             </p>
             <p className='tagBarcode'>
               {encodeToCode128(text)}

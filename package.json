@@ -1,13 +1,14 @@
 {
-  "name": "wms2",
-  "productName": "wms2",
+  "name": "wmslabeler",
+  "productName": "Gerador de Etiquetas WMS",
   "version": "1.0.0",
-  "description": "My Electron application description",
+  "description": "Generate WMS",
   "main": ".webpack/main",
   "scripts": {
     "start": "electron-forge start",
     "package": "electron-forge package",
     "make": "electron-forge make",
+    "makeWind": "electron-forge make -- --platform=win32 --arch=x64",
     "publish": "electron-forge publish",
     "lint": "eslint --ext .ts,.tsx ."
   },
