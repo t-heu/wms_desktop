@@ -26,13 +26,9 @@ Este projeto foi desenvolvido utilizando as seguintes tecnologias:
    ```
 3. Inicie o servidor de desenvolvimento:
    ```bash
-   npm run dev
+   npm run start
    # ou
-   yarn dev
-   ```
-4. Acesse o projeto no navegador:
-   ```
-   http://localhost:3000
+   yarn start
    ```
 
 ## 📝 Funcionalidades
