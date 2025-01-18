@@ -11,7 +11,7 @@ if (require('electron-squirrel-startup')) {
 }
 
 // Obter o diretório "Downloads" do usuário no Windows
-const downloadsPath = path.join(process.env.USERPROFILE, 'Downloads');
+const downloadsPath = path.join(process.env.USERPROFILE, 'Downloads'); //__dirname
 
 // Caminho completo do arquivo
 const filepath = path.join(downloadsPath, 'wms.pdf');
@@ -34,12 +34,12 @@ const createWindow = (): void => {
 
   // Open the DevTools.
   // mainWindow.webContents.openDevTools();
-
+  
   // Listen for print event from renderer process
   ipcMain.on('convert-pdf', () => {
     const options = {
       marginsType: 0, // Margens personalizadas
-      pageSize: { width: 1.97, height: 1.4 },
+      pageSize: { width: 2.99, height: 2.0 }, // 76,2 x 50,8mm | { width: 1.97, height: 1.4 } 50,1 x 35,6mm
       printBackground: true, // Imprimir fundo
       landscape: true, // Modo paisagem
     };

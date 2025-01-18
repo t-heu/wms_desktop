@@ -94,7 +94,7 @@ const Home = ({data, changeComponent}: any) => {
             </div>
           )}
           <button type="submit" className="input__button" disabled={!fileData || isSubmitting}>
-            {isSubmitting ? "Processando..." : "Gerar"}
+            {isSubmitting ? `Processando...` : "Gerar"}
           </button>
         </form>
         <p className="version__text">version 1.3</p>

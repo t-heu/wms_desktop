@@ -80,14 +80,22 @@
 }
 
 @media screen and (max-width: 920px) {
+  .header {
+    width: 80%;
+  }
+
   .tagContainer {
-    grid-template-columns: repeat(1, 1fr);
+    grid-template-columns: repeat(3,1fr);
   }
 }
 
 @media screen and (max-width: 600px) {
   .header {
     width: 100%;
+  }
+
+  .tagContainer {
+    grid-template-columns: repeat(1,1fr);
   }
 }
 
