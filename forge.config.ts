@@ -10,18 +10,32 @@ import { FuseV1Options, FuseVersion } from '@electron/fuses';
 
 import { mainConfig } from './webpack.main.config';
 import { rendererConfig } from './webpack.renderer.config';
+import { execSync } from 'child_process';
 
 const config: ForgeConfig = {
   packagerConfig: {
     asar: true,
-    icon: './assets/icons/icon.ico'
+    icon: './assets/icons/icon.ico',
+    prune: true,
   },
   rebuildConfig: {},
   makers: [
     new MakerSquirrel({
+      name: 'GeradorEtiquetasWMS',
       setupIcon: './assets/icons/icon.ico',
+      skipUpdateIcon: true,
+      setupExe: 'wmslabeler.exe', // Nome do arquivo do instalador
+      setupMsi: 'wmslabeler.msi', // Nome do arquivo MSI (opcional)
+      noMsi: true, // Evita gerar arquivos MSI se não forem necessários
+      loadingGif: './assets/loading.gif'
     }), // Para gerar executáveis Windows (.exe)
   ],
+  hooks: {
+    preMake: async () => {
+      // Executa o script para limpar os locales
+      execSync('npx ts-node ./scripts/clean-locales.ts', { stdio: 'inherit' });
+    },
+  },
   //[new MakerSquirrel({}), new MakerZIP({}, ['darwin']), new MakerRpm({}), new MakerDeb({})],
   plugins: [
     new AutoUnpackNativesPlugin({}),
