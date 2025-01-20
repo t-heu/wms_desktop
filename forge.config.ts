@@ -27,7 +27,8 @@ const config: ForgeConfig = {
       setupExe: 'wmslabeler.exe', // Nome do arquivo do instalador
       setupMsi: 'wmslabeler.msi', // Nome do arquivo MSI (opcional)
       noMsi: true, // Evita gerar arquivos MSI se não forem necessários
-      loadingGif: './assets/loading.gif'
+      loadingGif: './assets/loading.gif',
+      iconUrl: 'https://raw.githubusercontent.com/t-heu/wms_desktop/refs/heads/main/assets/icons/icon.ico'
     }), // Para gerar executáveis Windows (.exe)
   ],
   hooks: {

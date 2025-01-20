@@ -11,7 +11,7 @@ if (require('electron-squirrel-startup')) {
 }
 
 // Obter o diretório "Downloads" do usuário no Windows
-const downloadsPath = path.join(process.env.USERPROFILE, 'Downloads'); //__dirname
+const downloadsPath = process.env.NODE_ENV === 'development' ? __dirname : path.join(process.env.USERPROFILE, 'Downloads'); //__dirname
 
 // Caminho completo do arquivo
 const filepath = path.join(downloadsPath, 'wms.pdf');
