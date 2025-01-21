@@ -4,6 +4,8 @@
 
 ## About (WMS Labeler)
 
+![alt text](docs/logo.png "Scree Home")
+
 WMS Labeler é uma aplicação web desenvolvida para simplificar e otimizar o processo de geração de etiquetas WMS (Warehouse Management System). Criada com tecnologias modernas, a ferramenta oferece uma solução rápida, eficiente e intuitiva, eliminando a necessidade de softwares legados como Excel VBA e Windows XP, enquanto melhora significativamente a produtividade em ambientes logísticos.
 
 _OBS.: Esse sistema foi adaptado para uma empresa em específico._
@@ -54,7 +56,7 @@ npm run make -- --platform=win32 --arch=x64
 
 ## 🐛 Problemas e Suporte
 
-Caso encontre algum problema, sinta-se à vontade para abrir uma [issue](https://github.com/t-heu/seu-repositorio/issues).
+Caso encontre algum problema, sinta-se à vontade para abrir uma [issue](https://github.com/t-heu/wms_desktop/issues).
 
 ## 📄 Licença
 
