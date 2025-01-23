@@ -1,17 +1,17 @@
-import { toSetC, checkSum128, encodeToCode128 } from './code128';
+import { toSetB, checkSum128, encodeToCode128 } from './code128';
 
 describe('Funções de Code128', () => {
-  describe('toSetC', () => {
-    it('deve converter uma sequência de números pares para o formato C corretamente', () => {
-      expect(toSetC('123456')).toBe(',BX');
+  describe('toSetB', () => {
+    it('deve retornar uma string em LOWE', () => {
+      expect(toSetB('oi')).toBe('oi');
     });
 
-    it('deve retornar uma string vazia quando o texto não contém números pares', () => {
-      expect(toSetC('abc')).toBe('');
+    it('deve retornar uma string em UPPER', () => {
+      expect(toSetB('HELLO')).toBe('HELLO');
     });
 
-    it('deve converter parcialmente números pares do início da sequência e ignorar o restante', () => {
-      expect(toSetC('12345')).toBe(',B');
+    it('deve retornar uma string em numero', () => {
+      expect(toSetB('12345')).toBe('12345');
     });
   });
 
@@ -42,8 +42,17 @@ describe('Funções de Code128', () => {
       const result5 = encodeToCode128('1K T 21 CE 04 A');
       expect(result5).toMatch('Ì1K T 21 CE 04 A(Î');
 
-      const result6 = encodeToCode128('1K T 21 CE 04 B');
-      expect(result6).toMatch('Ì1K T 21 CE 04 B7Î');
+      const result6 = encodeToCode128('1 T 21 CE 04 A');
+      expect(result6).toMatch('Ì1 T 21 CE 04 A#Î');
+
+      const result7 = encodeToCode128('1K T 21 CE 04 B');
+      expect(result7).toMatch('Ì1K T 21 CE 04 B7Î');
+
+      const result8 = encodeToCode128('1I T 01 IE 01 I');
+      expect(result8).toMatch('Ì1I T 01 IE 01 I8Î');
+
+      const result9 = encodeToCode128('1 M 03 GD 01 F');
+      expect(result9).toMatch('Ì1 M 03 GD 01 FIÎ');
     });
 
     it('deve retornar código correto com espaços no texto', () => {

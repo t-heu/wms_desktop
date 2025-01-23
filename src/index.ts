@@ -23,7 +23,6 @@ const createWindow = (): void => {
     icon: path.join(__dirname, 'assets', 'icons', 'icon.ico'),
     webPreferences: {
       preload: MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY,
-      nodeIntegration: true
     },
   });
 
