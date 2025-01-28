@@ -1,6 +1,6 @@
-[![Twitter Badge](https://img.shields.io/badge/-@t__h__e__u-1ca0f1?style=flat-square&labelColor=1ca0f1&logo=twitter&logoColor=white&link=https://twitter.com/t_h_e_u)](https://twitter.com/t_h_e_u)
-[![Linkedin Badge](https://img.shields.io/badge/-matheusgbatista-blue?style=flat-square&logo=Linkedin&logoColor=white&link=https://www.linkedin.com/in/matheusgbatista-3392bb153/)](https://www.linkedin.com/in/matheusgbatista/)
-[![MyWeb Badge](https://img.shields.io/badge/-t--heu.github.io-333?style=flat-square&link=https://t-heu.github.io/)](https://t-heu.github.io)
+[![x](https://img.shields.io/badge/X-000000?style=for-the-badge&logo=X&logoColor=white)](https://twitter.com/t_h_e_u)
+[![linkedin](https://img.shields.io/badge/Linkedin-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/matheusgbatista/)
+[![web](https://img.shields.io/badge/web-000000?style=for-the-badge&logo=web&logoColor=white)](https://t-heu.github.io)
 
 ## About (WMS Labeler)
 
@@ -16,6 +16,14 @@ Este projeto foi desenvolvido utilizando as seguintes tecnologias:
 
 - [Next.js](https://nextjs.org/docs): Framework React para desenvolvimento de aplicações web.
 - [XLSX](https://sheetjs.com/): Biblioteca para manipulação de arquivos Excel (leitura e escrita).
+
+![Node.js](https://img.shields.io/badge/Node.js-43853D?style=for-the-badge&logo=node.js&logoColor=white)
+![sass](https://img.shields.io/badge/Sass-CC6699?style=for-the-badge&logo=Sass&logoColor=white)
+![ts](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=TypeScript&logoColor=white)
+![electron](https://img.shields.io/badge/Electron-47848F?style=for-the-badge&logo=electron&logoColor=white)
+![jest](https://img.shields.io/badge/Jest-C21325?style=for-the-badge&logo=jest&logoColor=white)
+![react](https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=react&logoColor=white)
+
 
 ## 📦 Instalação e Configuração
 
@@ -36,11 +44,6 @@ Este projeto foi desenvolvido utilizando as seguintes tecnologias:
 ```
 npm run make -- --platform=win32 --arch=x64
 ```
-
-## 📝 Funcionalidades
-
-- [Next.js](https://nextjs.org/docs): Utilizado para criar o front-end da aplicação.
-- [XLSX](sheetjs.com/): Processamento de arquivos Excel, como importação e exportação de dados.
 
 ## 🖼️ Preview
 ![alt text](docs/image1.png "Scree Home")
