@@ -35,6 +35,11 @@ function Tag({data = [], changeComponent}: any) {
     }
   };
 
+  const formatText = (text: string) => {
+    const match = text.match(/(?:\d+[A-Z]?\s?[A-Z]?\s)(.*)/); // Captura tudo após o prefixo
+    if (match) return match[1]
+  };
+
   return (
     <main className='pageTag'>
       <header className='header'>
@@ -93,7 +98,7 @@ function Tag({data = [], changeComponent}: any) {
         {currentData.map((text: string, index: number) => (
           <div className='tagCard' key={index}>
             <p className='tagText'>
-              {text.length >= 15 ? text.slice(5) : text.slice(4)}
+              {formatText(text)}
             </p>
             <p className='tagBarcode'>
               {encodeToCode128(text)}
