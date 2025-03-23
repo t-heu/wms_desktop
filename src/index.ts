@@ -11,10 +11,7 @@ if (require('electron-squirrel-startup')) {
 }
 
 // Obter o diretório "Downloads" do usuário no Windows
-const downloadsPath = process.env.NODE_ENV === 'development' ? __dirname : path.join(process.env.USERPROFILE, 'Downloads'); //__dirname
-
-// Caminho completo do arquivo
-const filepath = path.join(downloadsPath, 'wms.pdf');
+const downloadsPath = process.env.NODE_ENV === 'development' ? __dirname : path.join(process.env.USERPROFILE, 'Downloads');
 
 const createWindow = (): void => {
   const mainWindow = new BrowserWindow({
@@ -28,39 +25,49 @@ const createWindow = (): void => {
 
   // Load the index.html of the app.
   mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
-
   mainWindow.setMenu(null);
 
   // Open the DevTools.
   // mainWindow.webContents.openDevTools();
   
   // Listen for print event from renderer process
-  ipcMain.on('convert-pdf', () => {
-    const options = {
-      marginsType: 0, // Margens personalizadas
-      pageSize: { width: 2.99, height: 2.0 }, // 76,2 x 50,8mm | { width: 1.97, height: 1.4 } 50,1 x 35,6mm
-      printBackground: true, // Imprimir fundo
-      landscape: true, // Modo paisagem
-    };
-
-    mainWindow.webContents.printToPDF(options).then(data => {
-      fs.writeFile(filepath, data, function (err) {
-        if (err) {
-          console.log(err);
-        } else {
-          dialog.showMessageBox({
-            type: "info",
-            title: "PDF Gerado com Sucesso",
-            message: "O arquivo PDF foi gerado com sucesso e está disponível na sua pasta de Downloads.",
-            buttons: ["OK"]
-          });
-          console.log('PDF Generated Successfully');
-        }
+  ipcMain.on('convert-pdf', async (event, totalPages) => {
+    try {
+      const options = {
+        marginsType: 0, // Margens personalizadas
+        pageSize: { width: 2.99, height: 2.0 }, // 76,2 x 50,8mm
+        printBackground: true, // Imprimir fundo
+        landscape: true, // Modo paisagem
+      };
+  
+      for (let page = 1; page <= totalPages; page++) {
+        //console.log(`Mudando para página ${page}...`);
+  
+        // Pedir para o Renderer mudar de página
+        await mainWindow.webContents.executeJavaScript(`window.changePage(${page})`);
+  
+        // Esperar um curto tempo para a renderização acontecer
+        await new Promise((resolve) => setTimeout(resolve, 500));
+  
+        // Gerar o PDF da página atual
+        const data = await mainWindow.webContents.printToPDF(options);
+        const filePath = path.join(downloadsPath, `wms_${page}.pdf`);
+        fs.writeFileSync(filePath, data);
+        
+        // console.log(`PDF ${page} Gerado com Sucesso: ${filePath}`);
+      }
+  
+      dialog.showMessageBox({
+        type: "info",
+        title: "PDFs Gerados com Sucesso",
+        message: `Todos os PDFs (${totalPages}) foram gerados e estão na pasta de Downloads.`,
+        buttons: ["OK"]
       });
-    }).catch(error => {
-      console.log(error);
-    });
-  });
+  
+    } catch (error) {
+      console.error('Erro ao gerar PDFs:', error);
+    }
+  });  
 };
 
 app.on('ready', createWindow);

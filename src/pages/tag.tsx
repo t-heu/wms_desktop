@@ -3,10 +3,25 @@ import { useState, useMemo, useEffect } from "react";
 import {encodeToCode128} from '../utils/code128'
 import '../styles/tag.scss';
 
+declare global {
+  interface Window {
+    changePage: (page: number) => Promise<void>;
+  }
+}
+
 function Tag({data = [], changeComponent}: any) {
   const ITEMS_PER_PAGE = 500; // Defina quantos itens deseja por página
   const [currentPage, setCurrentPage] = useState(1);
   const totalPages = useMemo(() => Math.ceil(data.length / ITEMS_PER_PAGE), [data.length]);
+
+  useEffect(() => {
+    window.changePage = (page: number) => {
+      return new Promise((resolve) => {
+        setCurrentPage(page);
+        setTimeout(resolve, 300); // Pequeno delay para garantir que renderizou
+      });
+    };
+  }, []);
   
   useEffect(() => {
     const convertButton = document.getElementById('convert');
@@ -14,7 +29,7 @@ function Tag({data = [], changeComponent}: any) {
     if (convertButton) {
       convertButton.addEventListener('click', () => {
         // Enviar a solicitação para o processo principal para gerar o PDF
-        window.electron.ipcRenderer.send('convert-pdf');
+        window.electron.ipcRenderer.send('convert-pdf', totalPages);
       });
     } else {
       console.log("O botão com ID 'convert' não foi encontrado.");
@@ -43,7 +58,7 @@ function Tag({data = [], changeComponent}: any) {
   return (
     <main className='pageTag'>
       <header className='header'>
-        <a onClick={() => changeComponent('Home')} title="voltar" className='headerAction'>
+        <a onClick={() => changeComponent('Home')} title="Voltar" className='headerAction'>
           <svg
             stroke="currentColor"
             fill="none"
@@ -62,22 +77,22 @@ function Tag({data = [], changeComponent}: any) {
 
         Total: {data.length} | Página: {currentPage} / {totalPages}
 
-        <a id="convert" title="imprimir" className='headerAction'>
-          <svg
-            stroke="currentColor"
-            fill="none"
-            strokeWidth="2"
-            viewBox="0 0 24 24"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            height="30"
-            width="30"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <polyline points="6 9 6 2 18 2 18 9"></polyline>
-            <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
-            <rect x="6" y="14" width="12" height="8"></rect>
-          </svg>
+        <a id="convert" title="Baixar" className='headerAction'>
+        <svg
+          stroke="currentColor"
+          fill="none"
+          strokeWidth="2"
+          viewBox="0 0 24 24"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          height="30"
+          width="30"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+          <polyline points="7 10 12 15 17 10" />
+          <line x1="12" y1="15" x2="12" y2="3" />
+        </svg>
         </a>
       </header>
 

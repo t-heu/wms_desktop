@@ -97,7 +97,7 @@ const Home = ({data, changeComponent}: any) => {
             {isSubmitting ? `Processando...` : "Gerar"}
           </button>
         </form>
-        <p className="version__text">version 1.4</p>
+        <p className="version__text">Versão 1.5.0</p>
       </div>
     </div>
   );
