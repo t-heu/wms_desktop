@@ -46,8 +46,8 @@ npm run make -- --platform=win32 --arch=x64
 ```
 
 ## 🖼️ Preview
-![alt text](docs/image1.png "Scree Home")
-![alt text](docs/image2.png "Screen Tag")
+![alt text](docs/image.png "Scree Home")
+![alt text](docs/image1.png "Screen Tag")
 
 ## 🛠️ Como Usar
 

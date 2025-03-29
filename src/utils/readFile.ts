@@ -4,22 +4,20 @@ function readFile(file: any) {
   const wb = read(file, { type: 'buffer', raw: true });
   const wsname = wb.SheetNames[0];
   const ws = wb.Sheets[wsname];
-  const data: any[][] = utils.sheet_to_json(ws, { header: 1 });
-    
-  if (data.length === 0) {
-    alert('Arquivo não pode estar vazio!');
-    return [];
+
+  const uniqueSet = new Set<string>();
+
+  const range = utils.decode_range(ws["!ref"] || "A1");
+  for (let row = range.s.r; row <= range.e.r; row++) {
+    const cellAddress = utils.encode_cell({ r: row, c: 0 });
+    const cell = ws[cellAddress];
+
+    if (cell && cell.v !== undefined && cell.v !== null) {
+      uniqueSet.add(cell.v.toString().trim());
+    }
   }
-  
-  const uniqueData = Array.from(
-    new Set(
-      data
-        .filter((row) => row && row[0] !== undefined && row[0] !== null && row[0].toString().trim() !== '') // Pula linhas vazias
-        .map((row) => (row[0] || '').toString().trim())
-    )
-  );
     
-  return uniqueData
+  return Array.from(uniqueSet);
 }
 
 export default readFile;

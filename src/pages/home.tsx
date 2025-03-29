@@ -3,6 +3,8 @@ import React, { useState } from 'react';
 import '../styles/home.scss';
 import readFile from '../utils/readFile';
 
+import { version } from '../../package.json';
+
 const Home = ({data, changeComponent}: any) => {
   const [fileData, setFileData] = useState<any>(null)
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -43,6 +45,7 @@ const Home = ({data, changeComponent}: any) => {
     }
 
     try {
+      //console.time("processo");
       const reader = new FileReader();
 
       reader.onload = (e) => {
@@ -50,6 +53,7 @@ const Home = ({data, changeComponent}: any) => {
         if (buffer) {
           data(readFile(buffer as ArrayBuffer));
           changeComponent('Tag');
+          //console.timeEnd("processo");
         }
       };
 
@@ -97,7 +101,7 @@ const Home = ({data, changeComponent}: any) => {
             {isSubmitting ? `Processando...` : "Gerar"}
           </button>
         </form>
-        <p className="version__text">Versão 1.5.0</p>
+        <p className="version__text">Versão {version}</p>
       </div>
     </div>
   );

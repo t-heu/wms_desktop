@@ -13,6 +13,8 @@ if (require('electron-squirrel-startup')) {
 // Obter o diretório "Downloads" do usuário no Windows
 const downloadsPath = process.env.NODE_ENV === 'development' ? __dirname : path.join(process.env.USERPROFILE, 'Downloads');
 
+let isCancelled = false;
+
 const createWindow = (): void => {
   const mainWindow = new BrowserWindow({
     height: 600,
@@ -31,8 +33,9 @@ const createWindow = (): void => {
   // mainWindow.webContents.openDevTools();
   
   // Listen for print event from renderer process
-  ipcMain.on('convert-pdf', async (event, totalPages) => {
+  ipcMain.on('download-all-pdfs', async (event, totalPages) => {
     try {
+      isCancelled = false;
       const options = {
         marginsType: 0, // Margens personalizadas
         pageSize: { width: 2.99, height: 2.0 }, // 76,2 x 50,8mm
@@ -41,19 +44,25 @@ const createWindow = (): void => {
       };
   
       for (let page = 1; page <= totalPages; page++) {
+        console.log(isCancelled)
+        if (isCancelled) {
+          dialog.showMessageBox({
+            type: "warning",
+            title: "Processo Cancelado",
+            message: "A geração dos PDFs foi cancelada pelo usuário.",
+            buttons: ["OK"],
+          });
+          event.reply("pdf-cancelled");
+          return;
+        }
         //console.log(`Mudando para página ${page}...`);
-  
-        // Pedir para o Renderer mudar de página
+
         await mainWindow.webContents.executeJavaScript(`window.changePage(${page})`);
-  
-        // Esperar um curto tempo para a renderização acontecer
         await new Promise((resolve) => setTimeout(resolve, 500));
   
-        // Gerar o PDF da página atual
         const data = await mainWindow.webContents.printToPDF(options);
         const filePath = path.join(downloadsPath, `wms_${page}.pdf`);
         fs.writeFileSync(filePath, data);
-        
         // console.log(`PDF ${page} Gerado com Sucesso: ${filePath}`);
       }
   
@@ -63,11 +72,40 @@ const createWindow = (): void => {
         message: `Todos os PDFs (${totalPages}) foram gerados e estão na pasta de Downloads.`,
         buttons: ["OK"]
       });
+      event.reply("pdf-completed");
   
     } catch (error) {
       console.error('Erro ao gerar PDFs:', error);
     }
-  });  
+  });
+
+  ipcMain.on('download-single-pdf', async () => {
+    try {
+      const options = {
+        marginsType: 0, // Margens personalizadas
+        pageSize: { width: 2.99, height: 2.0 }, // 76,2 x 50,8mm
+        printBackground: true, // Imprimir fundo
+        landscape: true, // Modo paisagem
+      };
+  
+      const data = await mainWindow.webContents.printToPDF(options);
+      const filePath = path.join(downloadsPath, `wms.pdf`);
+      fs.writeFileSync(filePath, data);
+
+      dialog.showMessageBox({
+        type: "info",
+        title: "PDFs Gerados com Sucesso",
+        message: `PDFs (wms.pdf) foi baixado e esta na pasta de Downloads.`,
+        buttons: ["OK"]
+      });
+    } catch (error) {
+      console.error('Erro ao gerar PDFs:', error);
+    }
+  });
+
+  ipcMain.on("cancel-pdf", async () => {
+    isCancelled = true;
+  });
 };
 
 app.on('ready', createWindow);
