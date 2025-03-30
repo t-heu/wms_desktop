@@ -90,7 +90,7 @@ function Tag({data = [], changeComponent}: any) {
         Total: {data.length} | Página: {currentPage} / {totalPages}
 
         <div>
-          <a style={{ marginRight: '15px' }} onClick={HandleDownloadSingle} id="convert" title="Baixar um" className='headerAction'>
+          <a style={{ marginRight: '15px' }} onClick={HandleDownloadSingle} id="convert" title="Baixar página atual" className='headerAction'>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"

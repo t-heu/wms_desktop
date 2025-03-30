@@ -63,9 +63,9 @@ const Home = ({data, changeComponent}: any) => {
 
       reader.readAsArrayBuffer(fileData);
     } catch (error) {
-      console.error("Erro:", error);
       setIsSubmitting(false);
-      alert("Erro inesperado. Tente novamente mais tarde.");
+      console.error("Erro:", error);
+      alert(`Ocorreu um erro durante processo. Detalhes: ${error.message}`);
     }
   };
 
