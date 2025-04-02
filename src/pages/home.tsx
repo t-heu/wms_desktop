@@ -41,32 +41,30 @@ const Home = ({data, changeComponent}: any) => {
 
     if (!fileData) {
       alert("Nenhum arquivo foi selecionado.");
+      setIsSubmitting(false);
       return;
     }
 
-    try {
-      //console.time("processo");
-      const reader = new FileReader();
+    //console.time("processo");
+    const reader = new FileReader();
 
-      reader.onload = (e) => {
-        const buffer = e.target?.result;
-        if (buffer) {
-          data(readFile(buffer as ArrayBuffer));
-          changeComponent('Tag');
-          //console.timeEnd("processo");
-        }
-      };
-
-      reader.onerror = () => {
-        alert("Erro ao processar o arquivo. Por favor, tente novamente.");
-      };
-
-      reader.readAsArrayBuffer(fileData);
-    } catch (error) {
+    reader.onload = (e) => {
+      const buffer = e.target?.result;
+      if (buffer) {
+        data(readFile(buffer as ArrayBuffer));
+        changeComponent('Tag');
+        //console.timeEnd("processo");
+      }
       setIsSubmitting(false);
-      console.error("Erro:", error);
-      alert(`Ocorreu um erro durante processo. Detalhes: ${error.message}`);
-    }
+    };
+
+    reader.onerror = () => {
+      alert("Erro ao processar o arquivo. Por favor, tente novamente.");
+      console.error("Erro ao ler o arquivo.");
+      setIsSubmitting(false);
+    };
+
+    reader.readAsArrayBuffer(fileData);
   };
 
   return (

@@ -1,7 +1,7 @@
 {
   "name": "wmslabeler",
   "productName": "Gerador de Etiquetas WMS",
-  "version": "1.0.2",
+  "version": "1.0.4",
   "description": "Generate WMS",
   "main": ".webpack/main",
   "scripts": {

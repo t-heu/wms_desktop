@@ -1,6 +1,6 @@
 import { useState, useMemo, useEffect } from "react";
 
-import {encodeToCode128} from '../utils/code128'
+import { encodeToCode128 } from '../utils/code128'
 import '../styles/tag.scss';
 
 declare global {

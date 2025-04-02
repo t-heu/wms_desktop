@@ -13,9 +13,7 @@ if (require('electron-squirrel-startup')) {
 const downloadsPath = process.env.NODE_ENV === 'development' ? __dirname : path.join(process.env.USERPROFILE, 'Downloads');
 let isCancelled = false;
 
-process.on("uncaughtException", (error) => {
-  logError("Error: ", error);
-})
+process.on("uncaughtException", (error) => logError("Error: ", error))
 
 const createWindow = (): void => {
   const mainWindow = new BrowserWindow({
@@ -56,7 +54,12 @@ const handleDownloadAllPDFs = async (mainWindow: BrowserWindow, event: any, tota
 
     for (let page = 1; page <= totalPages; page++) {
       if (isCancelled) {
-        notifyUser("Processo Cancelado", "A geração dos PDFs foi cancelada pelo usuário.");
+        dialog.showMessageBox({
+          type: "info",
+          title: "Processo Cancelado",
+          message: "A geração dos PDFs foi cancelada pelo usuário.",
+          buttons: ["OK"],
+        });
         event.reply("pdf-cancelled");
         return;
       }
@@ -68,7 +71,12 @@ const handleDownloadAllPDFs = async (mainWindow: BrowserWindow, event: any, tota
       fs.writeFileSync(path.join(downloadsPath, `wms_${page}.pdf`), data);
     }
 
-    notifyUser("PDFs Gerados com Sucesso", `Todos os PDFs (${totalPages}) foram gerados na pasta de Downloads.`);
+    dialog.showMessageBox({
+      type: "info",
+      title: "PDFs Gerados com Sucesso",
+      message: `Todos os PDFs (${totalPages}) foram gerados na pasta de Downloads.`,
+      buttons: ["OK"],
+    });
     event.reply("pdf-completed");
   } catch (error) {
     console.error('Erro ao gerar PDFs:', error);
@@ -81,62 +89,63 @@ const handleDownloadSinglePDF = async (mainWindow: BrowserWindow) => {
     const data = await mainWindow.webContents.printToPDF(getPrintOptions());
     fs.writeFileSync(path.join(downloadsPath, `wms.pdf`), data);
 
-    notifyUser("PDF Gerado com Sucesso", "PDF wms.pdf foi baixado na pasta de Downloads.");
+    dialog.showMessageBox({
+      type: "info",
+      title: "PDF Gerado com Sucesso",
+      message: "PDF wms.pdf foi baixado na pasta de Downloads.",
+      buttons: ["OK"],
+    });
   } catch (error) {
     console.error('Erro ao gerar PDF:', error);
     logError("Erro ao Gerar PDF", error);
   }
 };
 
-const notifyUser = (title: string, message: string) => {
-  dialog.showMessageBox({
-    type: "info",
-    title,
-    message,
-    buttons: ["OK"],
-  });
-};
-
-const logError = (title: string, error: Error) => {
-  dialog.showMessageBox({
+const logError = async (title: string, error: Error | any) => {
+  await dialog.showMessageBox({
     type: "error",
     title: "Erro ao Gerar PDF",
     message: `Ocorreu um erro durante a geração do PDF. Detalhes: ${error.message}`,
     buttons: ["OK"],
   });
 
-  const logPath = path.join(app.getPath("userData"), "error_wmslabeler.log");
-  
-  // Capturar uso de CPU e memória no momento do erro
+  const logPath = path.join(app.getPath("userData"), "wmslabeler-error.log");
+
   const cpuUsage = process.getCPUUsage(); // Uso de CPU pelo processo Electron
   const memoryUsage = process.memoryUsage(); // Uso de memória detalhado
-  
-  // Capturar informações do sistema
+
+  // Criar um identificador único para cada erro
+  const errorId = Math.random().toString(36).substring(2, 10);
+
   const systemInfo = `
-    Sistema Operacional: ${os.platform()} - ${os.release()}
-    Arquitetura: ${os.arch()}
-    CPU: ${os.cpus()[0].model}
-    Memória Total: ${(os.totalmem() / 1024 / 1024).toFixed(2)} MB
-    Memória Livre: ${(os.freemem() / 1024 / 1024).toFixed(2)} MB
-    Uso de CPU pelo Electron: ${(cpuUsage.percentCPUUsage * 100).toFixed(2)}%
-    Memória RSS (Total usada pelo processo): ${(memoryUsage.rss / 1024 / 1024).toFixed(2)} MB
-    Heap Total: ${(memoryUsage.heapTotal / 1024 / 1024).toFixed(2)} MB
-    Heap Usado: ${(memoryUsage.heapUsed / 1024 / 1024).toFixed(2)} MB
+    [Sistema Operacional] ${os.platform()} - ${os.release()}
+    [Arquitetura] ${os.arch()}
+    [CPU] ${os.cpus()[0].model}
+    [Memória Total] ${(os.totalmem() / 1024 / 1024).toFixed(2)} MB
+    [Memória Livre] ${(os.freemem() / 1024 / 1024).toFixed(2)} MB
+    [Uso de CPU] ${(cpuUsage.percentCPUUsage * 100).toFixed(2)}%
+    [Memória RSS] ${(memoryUsage.rss / 1024 / 1024).toFixed(2)} MB
+    [Heap Total] ${(memoryUsage.heapTotal / 1024 / 1024).toFixed(2)} MB
+    [Heap Usado] ${(memoryUsage.heapUsed / 1024 / 1024).toFixed(2)} MB
   `;
 
-  // Criar conteúdo do log
   const logContent = `
-    [${new Date().toISOString()}] - ${title}
-    Erro: ${error.message}
-    Stacktrace: ${error.stack}
-    
-    App Versão: ${app.getVersion()}
-    Caminho do App: ${app.getPath("exe")}
+    [${new Date().toISOString()}] - Erro ID: ${errorId}
+    [Título] ${title}
+    [Erro] ${error.message}
+    [Stacktrace] ${error.stack}
+
+    [App Versão] ${app.getVersion()}
+    [Caminho do App] ${app.getPath("exe")}
     ${systemInfo}
     ----------------------------
   `;
 
-  fs.appendFileSync(logPath, logContent);
+  try {
+    fs.appendFileSync(logPath, logContent);
+  } catch (logError) {
+    console.error("Erro ao escrever no log:", logError);
+  }
 };
 
 app.on('ready', createWindow);

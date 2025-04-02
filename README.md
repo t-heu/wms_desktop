@@ -56,6 +56,7 @@ npm run make -- --platform=win32 --arch=x64
   2. Selecione o arquivo Excel.
   3. Clique no botão "Gerar".
   4. Aguarde o processamento dos dados e depois gere PDF.
+  5. Registro de log em UserData Path: C:\Users\SEU_USUARIO\AppData\Roaming\NOME_DO_APP
 
 ## 🐛 Problemas e Suporte
 
