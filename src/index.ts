@@ -28,6 +28,10 @@ const createWindow = (): void => {
   mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
   mainWindow.setMenu(null);
 
+  if (!app.isPackaged) {
+    mainWindow.webContents.openDevTools();
+  }  
+
   ipcMain.on('download-all-pdfs', async (event, totalPages) => {
     await handleDownloadAllPDFs(mainWindow, event, totalPages);
   });

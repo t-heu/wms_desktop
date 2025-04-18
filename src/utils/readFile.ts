@@ -13,10 +13,10 @@ function readFile(file: any) {
     const cell = ws[cellAddress];
 
     if (cell && cell.v !== undefined && cell.v !== null) {
-      uniqueSet.add(cell.v.toString().trim());
+      uniqueSet.add(cell.v.toString().trim().toUpperCase());
     }
   }
-    
+  
   return Array.from(uniqueSet);
 }
 
