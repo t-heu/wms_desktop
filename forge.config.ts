@@ -1,6 +1,6 @@
 import type { ForgeConfig } from '@electron-forge/shared-types';
-import { MakerSquirrel } from '@electron-forge/maker-squirrel';
-//import { MakerZIP } from '@electron-forge/maker-zip';
+//import { MakerSquirrel } from '@electron-forge/maker-squirrel';
+import { MakerZIP } from '@electron-forge/maker-zip';
 //import { MakerDeb } from '@electron-forge/maker-deb';
 //import { MakerRpm } from '@electron-forge/maker-rpm';
 import { AutoUnpackNativesPlugin } from '@electron-forge/plugin-auto-unpack-natives';
@@ -20,7 +20,7 @@ const config: ForgeConfig = {
   },
   rebuildConfig: {},
   makers: [
-    new MakerSquirrel({
+    /*new MakerSquirrel({
       name: 'GeradorEtiquetasWMS',
       setupIcon: './assets/icons/icon.ico',
       skipUpdateIcon: true,
@@ -29,13 +29,28 @@ const config: ForgeConfig = {
       noMsi: true, // Evita gerar arquivos MSI se não forem necessários
       loadingGif: './assets/loading.gif',
       iconUrl: 'https://raw.githubusercontent.com/t-heu/wms_desktop/refs/heads/main/assets/icons/icon.ico'
-    }), // Para gerar executáveis Windows (.exe)
+    }),*/ // Para gerar executáveis Windows (.exe)
+    new MakerZIP()
   ],
   hooks: {
     preMake: async () => {
       // Executa o script para limpar os locales
       execSync('npx ts-node ./scripts/clean-locales.ts', { stdio: 'inherit' });
     },
+    postMake: async (config, makeResults) => {
+      const fs = await import('fs');
+      const path = await import('path');
+
+      const zipArtifact = makeResults
+        .flatMap(result => result.artifacts)
+        .find(file => file.endsWith('.zip'));
+
+      if (zipArtifact) {
+        const newName = path.join(path.dirname(zipArtifact), 'wmslabeler-portatil.zip');
+        fs.renameSync(zipArtifact, newName);
+        console.log(`Renomeado para: ${newName}`);
+      }
+    }
   },
   //[new MakerSquirrel({}), new MakerZIP({}, ['darwin']), new MakerRpm({}), new MakerDeb({})],
   plugins: [
