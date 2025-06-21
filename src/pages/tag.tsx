@@ -3,12 +3,6 @@ import { useState, useMemo, useEffect } from "react";
 import { encodeToCode128 } from '../utils/code128'
 import '../styles/tag.scss';
 
-declare global {
-  interface Window {
-    changePage: (page: number) => Promise<void>;
-  }
-}
-
 function Tag({data = [], changeComponent}: any) {
   const ITEMS_PER_PAGE = 500; // Defina quantos itens deseja por página
   const [currentPage, setCurrentPage] = useState(1);
@@ -25,22 +19,24 @@ function Tag({data = [], changeComponent}: any) {
   }, []);
   
   useEffect(() => {
-    // Ouve quando o processo de geração de PDFs é cancelado ou concluído
-    window.electron.ipcRenderer.on("pdf-cancelled", () => {
-      setIsCancelled(false);  // Define o estado como cancelado
-    });
+    const handleCancelled = () => setIsCancelled(false);
+    const handleCompleted = () => setIsCancelled(false);
 
-    window.electron.ipcRenderer.on("pdf-completed", () => {
-      setIsCancelled(false);  // Restaura o estado inicial após o processo ser concluído
-    });
-  },[]);
+    window.electron.ipcRenderer.on("pdf-cancelled", handleCancelled);
+    window.electron.ipcRenderer.on("pdf-completed", handleCompleted);
 
-  const HandleDownloadAll = () => {
+    return () => {
+      window.electron.ipcRenderer.removeListener("pdf-cancelled", handleCancelled);
+      window.electron.ipcRenderer.removeListener("pdf-completed", handleCompleted);
+    };
+  }, []);
+
+  const handleDownloadAll = () => {
     window.electron.ipcRenderer.send("download-all-pdfs", totalPages);
     setIsCancelled(true);
   };
 
-  const HandleDownloadSingle = () => {
+  const handleDownloadSingle = () => {
     window.electron.ipcRenderer.send("download-single-pdf");
   };
 
@@ -74,10 +70,10 @@ function Tag({data = [], changeComponent}: any) {
           <svg
             stroke="currentColor"
             fill="none"
-            strokeWidth="2"
             viewBox="0 0 24 24"
-            strokeLinecap="round"
-            strokeLinejoin="round"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
             height="30"
             width="30"
             xmlns="http://www.w3.org/2000/svg"
@@ -90,7 +86,7 @@ function Tag({data = [], changeComponent}: any) {
         Total: {data.length} | Página: {currentPage} / {totalPages}
 
         <div>
-          <a style={{ marginRight: '15px' }} onClick={HandleDownloadSingle} id="convert" title="Baixar página atual" className='headerAction'>
+          <a style={{ marginRight: '15px' }} onClick={handleDownloadSingle} id="convert" title="Baixar página atual" className='headerAction'>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
@@ -112,10 +108,10 @@ function Tag({data = [], changeComponent}: any) {
               <svg
                 stroke="currentColor"
                 fill="none"
-                strokeWidth="2"
                 viewBox="0 0 24 24"
-                strokeLinecap="round"
-                strokeLinejoin="round"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
                 height="30"
                 width="30"
                 xmlns="http://www.w3.org/2000/svg"
@@ -126,14 +122,14 @@ function Tag({data = [], changeComponent}: any) {
               </svg>
             </a>
           ):(
-            <a onClick={HandleDownloadAll} id="convert" title="Baixar tudo" className='headerAction'>
+            <a onClick={handleDownloadAll} id="convert" title="Baixar tudo" className='headerAction'>
               <svg
                 stroke="currentColor"
                 fill="none"
-                strokeWidth="2"
                 viewBox="0 0 24 24"
-                strokeLinecap="round"
-                strokeLinejoin="round"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
                 height="30"
                 width="30"
                 xmlns="http://www.w3.org/2000/svg"

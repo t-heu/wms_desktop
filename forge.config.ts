@@ -1,8 +1,6 @@
 import type { ForgeConfig } from '@electron-forge/shared-types';
-//import { MakerSquirrel } from '@electron-forge/maker-squirrel';
 import { MakerZIP } from '@electron-forge/maker-zip';
-//import { MakerDeb } from '@electron-forge/maker-deb';
-//import { MakerRpm } from '@electron-forge/maker-rpm';
+import MyPortableMaker from './forge-makers/MakerMyPortable';
 import { AutoUnpackNativesPlugin } from '@electron-forge/plugin-auto-unpack-natives';
 import { WebpackPlugin } from '@electron-forge/plugin-webpack';
 import { FusesPlugin } from '@electron-forge/plugin-fuses';
@@ -20,17 +18,11 @@ const config: ForgeConfig = {
   },
   rebuildConfig: {},
   makers: [
-    /*new MakerSquirrel({
-      name: 'GeradorEtiquetasWMS',
-      setupIcon: './assets/icons/icon.ico',
-      skipUpdateIcon: true,
-      setupExe: 'wmslabeler.exe', // Nome do arquivo do instalador
-      setupMsi: 'wmslabeler.msi', // Nome do arquivo MSI (opcional)
-      noMsi: true, // Evita gerar arquivos MSI se não forem necessários
-      loadingGif: './assets/loading.gif',
-      iconUrl: 'https://raw.githubusercontent.com/t-heu/wms_desktop/refs/heads/main/assets/icons/icon.ico'
-    }),*/ // Para gerar executáveis Windows (.exe)
-    new MakerZIP()
+    new MakerZIP(),
+    new MyPortableMaker({
+      appId: 'com.theu.wmslabeler',
+      icon: './assets/icons/icon.ico',
+    }),
   ],
   hooks: {
     preMake: async () => {
@@ -52,7 +44,6 @@ const config: ForgeConfig = {
       }
     }
   },
-  //[new MakerSquirrel({}), new MakerZIP({}, ['darwin']), new MakerRpm({}), new MakerDeb({})],
   plugins: [
     new AutoUnpackNativesPlugin({}),
     new WebpackPlugin({

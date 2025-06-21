@@ -29,6 +29,13 @@ import './app';
 
 declare global {
   interface Window {
-    electron: any;
+    electron: {
+      ipcRenderer: {
+        send: (channel: string, data?: unknown) => void;
+        on: (channel: string, callback: (...args: any[]) => void) => void;
+        removeListener: (channel: string, callback: (...args: any[]) => void) => void;
+      };
+    };
+    changePage: (page: number) => Promise<void>;
   }
 }
