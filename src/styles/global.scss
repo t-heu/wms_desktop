@@ -13,6 +13,8 @@
 html,
 body {
   height: auto;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 body {

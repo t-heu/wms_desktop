@@ -1,33 +1,45 @@
 import { useState, useMemo, useEffect } from "react";
 
 import { encodeToCode128 } from '../utils/code128'
+
 import '../styles/tag.scss';
 
-function Tag({data = [], changeComponent}: any) {
-  const ITEMS_PER_PAGE = 500; // Defina quantos itens deseja por página
+interface TagProps {
+  data: any[]
+  changeComponent: (component: string) => void
+}
+
+const ITEMS_PER_PAGE = 500; // Defina quantos itens deseja por página
+
+function Tag({data = [], changeComponent}: TagProps) {
   const [currentPage, setCurrentPage] = useState(1);
   const [isCancelled, setIsCancelled] = useState(false);
+
   const totalPages = useMemo(() => Math.ceil(data.length / ITEMS_PER_PAGE), [data.length]);
 
   useEffect(() => {
-    window.changePage = (page: number) => {
-      return new Promise((resolve) => {
+    const changePageExternally = (page: number) => {
+      return new Promise<void>((resolve) => {
         setCurrentPage(page);
-        setTimeout(resolve, 300); // Pequeno delay para garantir que renderizou
+        setTimeout(resolve, 300); // delay opcional para garantir renderização
       });
     };
+
+    (window as any).changePage = changePageExternally;
   }, []);
   
   useEffect(() => {
     const handleCancelled = () => setIsCancelled(false);
     const handleCompleted = () => setIsCancelled(false);
 
-    window.electron.ipcRenderer.on("pdf-cancelled", handleCancelled);
-    window.electron.ipcRenderer.on("pdf-completed", handleCompleted);
+    const ipc = window.electron.ipcRenderer;
+
+    ipc.on("pdf-cancelled", handleCancelled);
+    ipc.on("pdf-completed", handleCompleted);
 
     return () => {
-      window.electron.ipcRenderer.removeListener("pdf-cancelled", handleCancelled);
-      window.electron.ipcRenderer.removeListener("pdf-completed", handleCompleted);
+      ipc.removeListener("pdf-cancelled", handleCancelled);
+      ipc.removeListener("pdf-completed", handleCompleted);
     };
   }, []);
 
@@ -71,9 +83,7 @@ function Tag({data = [], changeComponent}: any) {
             stroke="currentColor"
             fill="none"
             viewBox="0 0 24 24"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
+            strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
             height="30"
             width="30"
             xmlns="http://www.w3.org/2000/svg"
@@ -94,9 +104,7 @@ function Tag({data = [], changeComponent}: any) {
               height="30"
               fill="none"
               stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
+              strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
             >
               <path d="M6 2H18a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z" />
               <path d="M6 2l6 6h6" />
@@ -109,9 +117,7 @@ function Tag({data = [], changeComponent}: any) {
                 stroke="currentColor"
                 fill="none"
                 viewBox="0 0 24 24"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
+                strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
                 height="30"
                 width="30"
                 xmlns="http://www.w3.org/2000/svg"
@@ -127,9 +133,7 @@ function Tag({data = [], changeComponent}: any) {
                 stroke="currentColor"
                 fill="none"
                 viewBox="0 0 24 24"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
+                strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
                 height="30"
                 width="30"
                 xmlns="http://www.w3.org/2000/svg"

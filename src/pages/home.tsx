@@ -1,45 +1,55 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 
 import '../styles/home.scss';
 import readFile from '../utils/readFile';
 
 import { version } from '../../package.json';
 
-const Home = ({data, changeComponent}: any) => {
-  const [fileData, setFileData] = useState<any>(null)
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
-  const VALID_EXTENSIONS = ['xlsx', 'xls', 'ods', 'csv'];
+interface HomeProps {
+  data: React.Dispatch<React.SetStateAction<any[]>>
+  changeComponent: (component: string) => void
+}
 
-  const validateFileExtension = (fileName: string): boolean => {
+const VALID_EXTENSIONS = ['xlsx', 'xls', 'ods', 'csv'];
+
+const Home = ({data, changeComponent}: HomeProps) => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isLoadFile, setIsLoadFile] = useState(false);
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+
+  const validateFileExtension = useCallback((fileName: string): boolean => {
     const ext = fileName.split('.').pop()?.toLowerCase();
     return ext ? VALID_EXTENSIONS.includes(ext) : false;
-  };
+  }, []);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(event.target.files || []);
+    const file = files[0];
 
-    if (files.length === 0) {
+    setIsLoadFile(true);
+
+    if (!file) {
       alert("Nenhum arquivo selecionado");
+      setIsLoadFile(false)
       return;
     }
 
-    const file = files[0];
-
     if (!validateFileExtension(file.name)) {
       alert(`Arquivo com formato inválido! Permitido: ${VALID_EXTENSIONS.join(', ')}`);
+      setIsLoadFile(false)
       return;
     }
 
     setSelectedFiles(files);
-    setFileData(file);
   };
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     setIsSubmitting(true);
 
-    if (!fileData) {
+    const file = selectedFiles[0];
+
+    if (!file) {
       alert("Nenhum arquivo foi selecionado.");
       setIsSubmitting(false);
       return;
@@ -60,17 +70,16 @@ const Home = ({data, changeComponent}: any) => {
 
     reader.onerror = () => {
       alert("Erro ao processar o arquivo. Por favor, tente novamente.");
-      console.error("Erro ao ler o arquivo.");
       setIsSubmitting(false);
     };
 
-    reader.readAsArrayBuffer(fileData);
+    reader.readAsArrayBuffer(file);
   };
 
   return (
     <div className="pageHeader">
       <div className="content">
-        <h2>GERAR ETIQUETAS WMS</h2>
+        <h2>GERAR ETIQUETAS WMS {version}</h2>
         <p>Arraste ou clique para enviar.</p>
         <form onSubmit={handleSubmit}>
           <div className="input__form">
@@ -95,11 +104,10 @@ const Home = ({data, changeComponent}: any) => {
               </ul>
             </div>
           )}
-          <button type="submit" className="input__button" disabled={!fileData || isSubmitting}>
+          <button type="submit" className="input__button" disabled={!isLoadFile}>
             {isSubmitting ? `Processando...` : "Gerar"}
           </button>
         </form>
-        <p className="version__text">Versão {version}</p>
       </div>
     </div>
   );
