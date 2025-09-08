@@ -8,11 +8,13 @@ import { version } from '../../package.json';
 interface HomeProps {
   data: React.Dispatch<React.SetStateAction<any[]>>
   changeComponent: (component: string) => void
+  pageCount: number
+  setPageCount: React.Dispatch<React.SetStateAction<number>>
 }
 
 const VALID_EXTENSIONS = ['xlsx', 'xls', 'ods', 'csv'];
 
-const Home = ({data, changeComponent}: HomeProps) => {
+const Home = ({data, changeComponent, pageCount, setPageCount}: HomeProps) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoadFile, setIsLoadFile] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
@@ -82,6 +84,14 @@ const Home = ({data, changeComponent}: HomeProps) => {
         <h2>GERAR ETIQUETAS WMS {version}</h2>
         <p>Arraste ou clique para enviar.</p>
         <form onSubmit={handleSubmit}>
+          <input
+            type="number"
+            min={1}
+            placeholder="Quantidade de páginas"
+            value={pageCount}
+            onChange={(e) => setPageCount(Number(e.target.value))}
+            className="input__pages"
+          />
           <div className="input__form">
             <input
               type="file"

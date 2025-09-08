@@ -36,6 +36,28 @@
       flex-direction: column;
       margin-bottom: 10px;
 
+      .input__pages {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 1em;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 14px;
+        color: #333;
+        outline: none;
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+
+        &:focus {
+          border-color: #2c5396;
+          box-shadow: 0 0 4px rgba(44, 83, 150, 0.4);
+        }
+
+        &::placeholder {
+          color: #888;
+          font-size: 13px;
+        }
+      }
+
       .input__form {
         display: flex;
         align-items: center;

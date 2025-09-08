@@ -7,13 +7,14 @@ import '../styles/tag.scss';
 interface TagProps {
   data: any[]
   changeComponent: (component: string) => void
+  pageCount: number;
 }
 
-const ITEMS_PER_PAGE = 500; // Defina quantos itens deseja por página
-
-function Tag({data = [], changeComponent}: TagProps) {
+function Tag({data = [], changeComponent, pageCount}: TagProps) {
   const [currentPage, setCurrentPage] = useState(1);
   const [isCancelled, setIsCancelled] = useState(false);
+
+  const ITEMS_PER_PAGE = pageCount || 500;
 
   const totalPages = useMemo(() => Math.ceil(data.length / ITEMS_PER_PAGE), [data.length]);
 
