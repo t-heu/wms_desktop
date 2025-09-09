@@ -46,37 +46,52 @@ const Home = ({data, changeComponent, pageCount, setPageCount}: HomeProps) => {
   };
 
   const handleSubmit = async (event: React.FormEvent) => {
-    event.preventDefault();
-    setIsSubmitting(true);
+  event.preventDefault();
+  setIsSubmitting(true);
 
-    const file = selectedFiles[0];
+  if (!selectedFiles || selectedFiles.length === 0) {
+    alert("Nenhum arquivo foi selecionado.");
+    setIsSubmitting(false);
+    return;
+  }
 
-    if (!file) {
-      alert("Nenhum arquivo foi selecionado.");
-      setIsSubmitting(false);
-      return;
-    }
+  const processFile = (file: File): Promise<string[]> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
 
-    //console.time("processo");
-    const reader = new FileReader();
+      reader.onload = (e) => {
+        const buffer = e.target?.result;
+        if (buffer) {
+          const values = readFile(buffer as ArrayBuffer); // retorna string[]
+          resolve(values);
+        } else {
+          reject(new Error("Falha ao ler arquivo"));
+        }
+      };
 
-    reader.onload = (e) => {
-      const buffer = e.target?.result;
-      if (buffer) {
-        data(readFile(buffer as ArrayBuffer));
-        changeComponent('Tag');
-        //console.timeEnd("processo");
-      }
-      setIsSubmitting(false);
-    };
-
-    reader.onerror = () => {
-      alert("Erro ao processar o arquivo. Por favor, tente novamente.");
-      setIsSubmitting(false);
-    };
-
-    reader.readAsArrayBuffer(file);
+      reader.onerror = () => reject(new Error("Erro ao processar arquivo"));
+      reader.readAsArrayBuffer(file);
+    });
   };
+
+  try {
+    // Lê todos os arquivos em paralelo
+    const results = await Promise.all(
+      Array.from(selectedFiles).map(file => processFile(file))
+    );
+
+    // Junta tudo e tira duplicados
+    const merged = Array.from(new Set(results.flat()));
+
+    data(merged);
+    changeComponent('Tag');
+  } catch (err) {
+    alert("Erro ao processar um ou mais arquivos. Por favor, tente novamente.");
+    console.error(err);
+  } finally {
+    setIsSubmitting(false);
+  }
+};
 
   return (
     <div className="pageHeader">
